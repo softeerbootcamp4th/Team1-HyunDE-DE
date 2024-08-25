@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+
+  airflow:
+    image: custom_airflow_image
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:postgrespassword@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor # Celery X
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+      - "18888:8888"
+    volumes:
+      - ./dags:/opt/airflow/dags
+
+networks:
+  kafka_airflow_net:
+    external: true
