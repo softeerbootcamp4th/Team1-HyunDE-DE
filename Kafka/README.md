@@ -1,0 +1,152 @@
+# DE1 - Kafka
+
+## Basic Settings
+
+- 3 ZooKeeper, 3 KafkaBroker, 1 KafkaUI
+
+- Kraft Mode ... ? -> X, 정보가 적은 편 -> 불안정할 가능성
+
+- Topic, Partition, ConsumerOffset 관리는 Web UI로 알아보기 쉽게
+
+### Ports ?
+
+- 10000:8080 -> Kafka Web UI 
+
+- 2181, 2182, 2183 -> Zookeeper
+
+- 9091, 9092, 9093 -> Kafka
+
+
+### images ?
+
+- Zookeeper: zookeeper:3.7
+
+- Kafka: confluentinc/cp-kafka:7.7.0
+
+    - arm64(aarch64) 기반 아키텍처 지원하는 이미지 버전 이용
+
+### Configs ?
+
+- 클러스터가 올라가는 EC2의 Private IP 10.1.3.19 -> `LISTENER_DOCKER_EXTERNAL:10.1.3.19:{container-port}`
+
+- 나머지는 별거없음 !
+
+## docker-compose.yml
+
+```yml
+
+services:
+  zookeeper1:
+    image: zookeeper:3.7
+    hostname: zookeeper1
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888;2181 server.2=zookeeper2:2888:3888;2182 server.3=zookeeper3:2888:3888;2183
+    volumes:
+      - ~/data/zookeeper1/data:/data
+      - ~/data/zookeeper1/datalog:/datalog
+
+  zookeeper2:
+    image: zookeeper:3.7
+    hostname: zookeeper2
+    ports:
+      - "2182:2182"
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_PORT: 2182
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888;2181 server.2=zookeeper2:2888:3888;2182 server.3=zookeeper3:2888:3888;2183
+    volumes:
+      - ~/data/zookeeper2/data:/data
+      - ~/data/zookeeper2/datalog:/datalog
+
+  zookeeper3:
+    image: zookeeper:3.7
+    hostname: zookeeper3
+    ports:
+      - "2183:2183"
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_PORT: 2183
+      ZOO_SERVERS: server.1=zookeeper1:2888:3888;2181 server.2=zookeeper2:2888:3888;2182 server.3=zookeeper3:2888:3888;2183
+    volumes:
+      - ~/data/zookeeper3/data:/data
+      - ~/data/zookeeper3/datalog:/datalog
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.7.0
+    hostname: kafka1
+    ports:
+      - "9091:9091"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19091,LISTENER_DOCKER_EXTERNAL://10.1.3.19:9091
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    volumes:
+      - ~/data/kafka1/data:/tmp/kafka-logs
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+  
+  kafka2:
+    image: confluentinc/cp-kafka:7.7.0
+    hostname: kafka2
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka2:19092,LISTENER_DOCKER_EXTERNAL://10.1.3.19:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    volumes:
+      - ~/data/kafka2/data:/tmp/kafka-logs
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.7.0
+    hostname: kafka3
+    ports:
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2182,zookeeper3:2183
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka3:19093,LISTENER_DOCKER_EXTERNAL://10.1.3.19:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+    volumes:
+      - ~/data/kafka3/data:/tmp/kafka-logs
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+      
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "10000:8080"
+    restart: always
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka_multi_cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:19091, kafka2:19092, kafka3:19093
+      AUTH_TYPE: "LOGIN_FORM"
+      SPRING_SECURITY_USER_NAME: dlawork9888
+      SPRING_SECURITY_USER_PASSWORD: {}
+
+```
