@@ -23,7 +23,7 @@
   - 현재 설정된 키워드는 “결함”과  “고장”으로 이를 포함한 게시글 혹은 댓글을 감지 중에 있습니다.
 
 #### **E-Mail Alert**
-<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash3.png?raw=true" >
+<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash5.png?raw=true" >
   - 라이브워치에 대한 정보를 메일 알림으로도 제공을 합니다.
   - 키워드가 포함된 게시글이나 댓글, 혹은 뉴스가 발견되면 메일에서도 알림으로 받아볼 수 있습니다.
 
@@ -31,7 +31,7 @@
 
 #### **Similar DashBoard**
 
-<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash4.png?raw=true" >
+<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash3.png?raw=true" >
 
   - 현재 투싼에 대한 소비자들의  관심도 그래프와 가장 유사한 과거 케이스를 보여줍니다.
   - 유사한 차종과 날짜, 유사도, 결함분류, 대상수량을 볼 수 있습니다.
@@ -41,7 +41,7 @@
   - 과거의 케이스에서는 이런 변화가 있었으니 현재 상황에서도 비슷한 양상으로 진행 될 가능성이 있음을 나타냅니다.
 
 #### **Customer Reaction**
-<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash5.png?raw=true" >
+<img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash4.png?raw=true" >
   - 투싼에 대해 트래킹 하는 게시글이나 댓글에 대한 정보가 있는 날짜를 선택하면
   - 선택한 날짜의 Sentiment Pie Chart가 보이게됩니다
   - 또한 해당 날짜에 comment들에 대한 워드 클라우드를 확인 할 수 있고, 해당  날짜의 ViewCount가 가장 높은 게시글 또한 확인 할 수 있습니다.
