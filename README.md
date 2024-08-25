@@ -20,7 +20,6 @@
 <img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash3.png?raw=true" >
 - 사용자가 사전에 설정한 키워드가 포함된 새로운 게시글이나 댓글을 감지하면 그 정보를 보여주는데요,
 - 현재 설정된 키워드는 “결함”과  “고장”으로 이를 포함한 게시글 혹은 댓글을 감지 중에 있습니다.
-- 
 
 #### **E-Mail Alert**
 <img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash4.png?raw=true" >
