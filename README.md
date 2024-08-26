@@ -13,6 +13,7 @@
   - 게시글과 댓글이 많이 생성될 수록 그래프가 가파르게 상승함을 알 수 있습니다.
 
 <img src="https://github.com/ssangmin-junior/softeer_wiki/blob/main/files/dash2.png?raw=true" >
+
 ##### **Most Increasing Post**
 
   - 3시간 이전 커뮤니티 스냅샷과 비교하였을 때, 조회수가 가장 크게 증가한 게시글을 간략히 보여줍니다.
